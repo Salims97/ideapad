@@ -11,6 +11,7 @@ import { Water } from 'three/examples/jsm/objects/Water.js';
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
 import { BackSide } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import RocketBody from './assets/src/scripts/rocke_body';
 console.log(THREE);
 
 //console.log(vertexShader);
@@ -106,6 +107,9 @@ function init() {
 
 
 
+
+  //this is how to import from another java script file
+  var rocket = new RocketBody(/*put some positions*/);
 
 
 
@@ -229,7 +233,7 @@ function init() {
 
 
 
-  //rocket and base 
+  // base 
   const gltfLoader = new GLTFLoader();
 
   gltfLoader.load('assets/models/base of rocket/scene.gltf',
@@ -242,6 +246,42 @@ function init() {
       baseRocket.scale.set(100, 100, 100);
     }
   );
+
+
+  //rocket
+  gltfLoader.load('assets/models/rocket_model/scene.gltf',
+    (gltf) => {
+      const rockets = gltf.scene;
+      console.log(rockets);
+      scene.add(rockets);
+
+      rockets.position.set(0, 80, 0);
+      rockets.scale.set(40, 40, 40);
+    }
+  );
+
+
+
+  //cylinder
+  function addCylinder(x,y,z) {
+    
+  
+  gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
+    (gltf) => {
+      const oxigenCylinder = gltf.scene;
+      console.log(oxigenCylinder);
+      scene.add(oxigenCylinder);
+
+      oxigenCylinder.position.set(x, y, z);
+      oxigenCylinder.scale.set(2.5, 5, 2);
+    }
+  );
+
+
+  }
+
+  addCylinder(8,30,0);
+  addCylinder(-8,30,0);
 
 }
 function animate() {

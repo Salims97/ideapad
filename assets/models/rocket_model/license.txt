@@ -1,0 +1,11 @@
+Model Information:
+* title:	Atlas_V_401
+* source:	https://sketchfab.com/3d-models/atlas-v-401-b653a17bf47a47f58a29f716a6d38945
+* author:	yuvi45554 (https://sketchfab.com/yuvraj4indore)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Atlas_V_401" (https://sketchfab.com/3d-models/atlas-v-401-b653a17bf47a47f58a29f716a6d38945) by yuvi45554 (https://sketchfab.com/yuvraj4indore) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
