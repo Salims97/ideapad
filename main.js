@@ -236,7 +236,7 @@ function init() {
   // base 
   const gltfLoader = new GLTFLoader();
 
-  gltfLoader.load('assets/models/base of rocket/scene.gltf',
+  gltfLoader.load('assets/models/base_of_rocket/scene.gltf',
     (gltf) => {
       const baseRocket = gltf.scene;
       console.log(baseRocket);
