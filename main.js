@@ -24,14 +24,17 @@ console.log(THREE);
 
 let camera, scene, renderer;
 let controls, water, sun;
-let earthMesh, cloudMesh, starMesh, group, seaEarthMesh,grouproket;
+let earthMesh, cloudMesh, starMesh, group, seaEarthMesh,groupRocket;
 let mouse;
+//
+let vectorRocket;
 init();
 animate();
 function init() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-  camera.position.z = 20;
+  camera.position.z = 200;
+  camera.position.y = 120;
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -247,8 +250,8 @@ function init() {
     }
   );
 
-grouproket=new THREE.Group();
-
+groupRocket=new THREE.Group();
+vectorRocket =  new THREE.Vector3(0,0.1,0);
   //rocket
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
@@ -258,7 +261,7 @@ grouproket=new THREE.Group();
 
       rockets.position.set(0, 80, 0);
       rockets.scale.set(40, 40, 40);
-      grouproket.add(rockets)
+      groupRocket.add(rockets);
     }
   );
 
@@ -276,7 +279,7 @@ grouproket=new THREE.Group();
 
       oxigenCylinder.position.set(8, 30, 0);
       oxigenCylinder.scale.set(2.5, 5, 2);
-      grouproket.add(oxigenCylinder)
+      groupRocket.add(oxigenCylinder);
     }
   );
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
@@ -287,13 +290,13 @@ grouproket=new THREE.Group();
 
       oxigenCylinder1.position.set(-8, 30, 0);
       oxigenCylinder1.scale.set(2.5, 5, 2);
-      grouproket.add(oxigenCylinder1)
+      groupRocket.add(oxigenCylinder1);
     }
   );
 
 
   
-  scene.add(grouproket);
+  scene.add(groupRocket);
 
  // addCylinder(8,30,0);
   //addCylinder(-8,30,0);
@@ -310,8 +313,8 @@ function animate() {
 
   group.rotation.y += 0.001;
   group.rotation.y = mouse.x * 0.5;
-//grouproket.rotation.y+=0.01;
-  grouproket.position.y+=0.1
+//groupRocket.rotation.y+=0.01;
+  groupRocket.position.add(vectorRocket);
 }
 
 function render() {
