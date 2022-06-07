@@ -24,7 +24,7 @@ console.log(THREE);
 
 let camera, scene, renderer;
 let controls, water, sun;
-let earthMesh, cloudMesh, starMesh, group, seaEarthMesh;
+let earthMesh, cloudMesh, starMesh, group, seaEarthMesh,grouproket;
 let mouse;
 init();
 animate();
@@ -247,41 +247,56 @@ function init() {
     }
   );
 
+grouproket=new THREE.Group();
 
   //rocket
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
       const rockets = gltf.scene;
       console.log(rockets);
-      scene.add(rockets);
+     // scene.add(rockets);
 
       rockets.position.set(0, 80, 0);
       rockets.scale.set(40, 40, 40);
+      grouproket.add(rockets)
     }
   );
 
 
 
   //cylinder
-  function addCylinder(x,y,z) {
+  
     
   
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
     (gltf) => {
       const oxigenCylinder = gltf.scene;
       console.log(oxigenCylinder);
-      scene.add(oxigenCylinder);
+      //scene.add(oxigenCylinder);
 
-      oxigenCylinder.position.set(x, y, z);
+      oxigenCylinder.position.set(8, 30, 0);
       oxigenCylinder.scale.set(2.5, 5, 2);
+      grouproket.add(oxigenCylinder)
+    }
+  );
+  gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
+    (gltf) => {
+      const oxigenCylinder1 = gltf.scene;
+      console.log(oxigenCylinder1);
+      //scene.add(oxigenCylinder1);
+
+      oxigenCylinder1.position.set(-8, 30, 0);
+      oxigenCylinder1.scale.set(2.5, 5, 2);
+      grouproket.add(oxigenCylinder1)
     }
   );
 
 
-  }
+  
+  scene.add(grouproket);
 
-  addCylinder(8,30,0);
-  addCylinder(-8,30,0);
+ // addCylinder(8,30,0);
+  //addCylinder(-8,30,0);
 
 }
 function animate() {
@@ -295,6 +310,8 @@ function animate() {
 
   group.rotation.y += 0.001;
   group.rotation.y = mouse.x * 0.5;
+//grouproket.rotation.y+=0.01;
+  grouproket.position.y+=0.1
 }
 
 function render() {
