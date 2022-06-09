@@ -28,12 +28,14 @@ let controls, water, sun;
 let earthMesh, cloudMesh, starMesh, group, seaEarthMesh;
 let mouse;
 //model
-let vectorRocket, groupRocket;
+let vectorRocket, groupRocket, vectorCOG, vectorCOP;
 //physics:
 // center of gravity
-let fThrust, fWeight, mdot, rocketMass, fuelMass, fullMass, angleOfAttack, zero, thrust;
+let fThrust, fWeight, mdot, rocketMass, fuelMass, fullMass, angleOfAttack, zero, thrust, weight;
+//gravity 
+let gravityConst = 6.67428 * Math.pow(10, -11), r = 6278, earthMass = 5.97219 * Math.pow(10, 24);
 //center of pressure 
-let fDrag, drag, referencArea, rho, dragCoefficient;
+let fDrag, drag, referenceArea, rho, dragCoefficient;
 //euler
 let velocity, acceleration, dt = 0.01, rocketPosition;
 init();
@@ -43,9 +45,9 @@ updatePhysics();
 
 function init() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-  camera.position.z = 200;
-  camera.position.y = 120;
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 25000);
+  camera.position.z = 10;
+  camera.position.y = 5;
 
   scene.add(new THREE.AxesHelper(5000));
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -68,7 +70,7 @@ function init() {
 
   }));
 
-  const earthGeometry = new THREE.SphereGeometry(2000, 50, 50);
+  const earthGeometry = new THREE.SphereGeometry(100, 378, 50, 50);
 
   // earth material
   const earthMaterial = new THREE.MeshPhongMaterial({
@@ -95,7 +97,7 @@ function init() {
 
 
   // cloud Geometry
-  const cloudGeometry = new THREE.SphereGeometry(2005, 50, 50);
+  const cloudGeometry = new THREE.SphereGeometry(103, 50, 50);
 
   // cloud metarial
   const cloudMetarial = new THREE.MeshPhongMaterial({
@@ -108,7 +110,7 @@ function init() {
   scene.add(cloudMesh);
 
   // galaxy geometry
-  const starGeometry = new THREE.SphereGeometry(5000, 50, 50);
+  const starGeometry = new THREE.SphereGeometry(800, 50, 50);
 
   // galaxy material
   const starMaterial = new THREE.MeshBasicMaterial({
@@ -144,7 +146,7 @@ function init() {
   //scene.add(spherebump)
 
   //create atmosphere 
-  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(2000, 50, 50), new THREE.ShaderMaterial({
+  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(100, 50, 50), new THREE.ShaderMaterial({
     vertexShader: atmosphereVertexShader,
     fragmentShader: atmosphereFragmentShader,
     blending: THREE.AdditiveBlending,
@@ -174,7 +176,7 @@ function init() {
 
   // Water
 
-  const waterGeometry = new THREE.CircleGeometry(1300, 10000);
+  const waterGeometry = new THREE.CircleGeometry(100, 1000);
 
   water = new Water(
 
@@ -194,7 +196,7 @@ function init() {
       fog: scene.fog !== undefined
     }
   );
-
+  // water.position.set(0, 6278, 0);
   water.rotation.x = - Math.PI / 2;
 
   scene.add(water);
@@ -203,7 +205,7 @@ function init() {
 
   const sky = new Sky();
   sky.scale.setScalar(1);
-  sky.geometry = new THREE.SphereGeometry(2000);
+  sky.geometry = new THREE.SphereGeometry(100);
   //scene.add( sky );
 
   const skyUniforms = sky.material.uniforms;
@@ -220,7 +222,7 @@ function init() {
 
   const pmremGenerator = new THREE.PMREMGenerator(renderer);
   const sky1 = new THREE.TextureLoader().load('image/Sky.jpeg');
-  const geometryS = new THREE.SphereGeometry(1995, 50, 50);
+  const geometryS = new THREE.SphereGeometry(100, 50, 50);
   const materialS1 = new THREE.MeshBasicMaterial({ map: sky1, transparent: false });
   var earth1 = new THREE.Mesh(geometryS, materialS1);
   earth1.material.side = THREE.BackSide;
@@ -258,7 +260,7 @@ function init() {
       scene.add(baseRocket);
 
       baseRocket.position.set(0, 0, 0);
-      baseRocket.scale.set(100, 100, 100);
+      baseRocket.scale.set(4, 4, 4);
     }
   );
 
@@ -271,8 +273,8 @@ function init() {
       // console.log(rockets);
       // scene.add(rockets);
 
-      rockets.position.set(0, 80, 0);
-      rockets.scale.set(40, 40, 40);
+      rockets.position.set(0, 3.9, 0);
+      rockets.scale.set(2, 2, 2);
       groupRocket.add(rockets);
     }
   );
@@ -289,8 +291,8 @@ function init() {
       // console.log(oxigenCylinder);
       //scene.add(oxigenCylinder);
 
-      oxigenCylinder.position.set(8, 30, 0);
-      oxigenCylinder.scale.set(2.5, 5, 2);
+      oxigenCylinder.position.set(0.45, 1.5, 0);
+      oxigenCylinder.scale.set(0.15, 0.25, 0.15);
       groupRocket.add(oxigenCylinder);
     }
   );
@@ -300,8 +302,8 @@ function init() {
       // console.log(oxigenCylinder1);
       //scene.add(oxigenCylinder1);
 
-      oxigenCylinder1.position.set(-8, 30, 0);
-      oxigenCylinder1.scale.set(2.5, 5, 2);
+      oxigenCylinder1.position.set(-0.45, 1.5, 0);
+      oxigenCylinder1.scale.set(0.15, 0.25, 0.15);
       groupRocket.add(oxigenCylinder1);
     }
   );
@@ -316,28 +318,29 @@ function init() {
 
 
   // initial value of phyisics
-  thrust = 10000;
+  thrust = 3800000; //57800000;
   angleOfAttack = Math.PI / 2;
-  mdot = 1;
-  rocketMass = 200;
-  fuelMass = 10;
+  mdot = 3000;
+  rocketMass = 33000;
+  fuelMass = 30000;
   fullMass = rocketMass + fuelMass;
-  fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack), thrust * Math.sin(angleOfAttack), 0);
-  fWeight = new THREE.Vector3(0, -(fullMass * 9.8), 0);
 
+  rho = 1.3;
+  referenceArea = 0.112;
+  dragCoefficient = 0.75;
   acceleration = new THREE.Vector3();
   velocity = new THREE.Vector3();
   rocketPosition = new THREE.Vector3();
-  // drag = 0.5 * rho * dragCoefficient * referencArea * V*V ;
-  // fDrag = new THREE.Vector3( - drag * Math.cos(angleOfAttack) /1000, -drag * Math.sin(angleOfAttack)/1000, 0);
+  vectorCOG = new THREE.Vector3();
+  vectorCOP = new THREE.Vector3();
 
 
   var aziz = new THREE.Vector3(2, 4, 6);
   console.log(aziz, 'aziz');
   //  aziz.multiplyScalar(2);
-  aziz = aziz.addScaledVector(aziz,2);
+  aziz = aziz.addScaledVector(aziz, 2);
   console.log(aziz);
- 
+
 
   //euler
 
@@ -348,24 +351,6 @@ function init() {
 
 
 
-//this code runs every second 
-setInterval(function () {
-
-
-  if (fullMass > rocketMass) {
-    fuelMass -= mdot;
-    fullMass = fuelMass + rocketMass;
-  }
-
-  if (fullMass <= rocketMass) {
-    fullMass = rocketMass;
-    fuelMass = 0;
-  }
-
-  console.log(fuelMass, fullMass);
-
-
-}, 1000);
 
 
 
@@ -377,20 +362,31 @@ function updatePhysics() {
 
 
   if (fuelMass == 0) {
-    zero = new THREE.Vector3(0, 0, 0);
-    fThrust.copy(zero);
+    thrust = 0;
   }
 
   // console.log(fWeight,fThrust);
   //  console.log(groupRocket.position,fuelMass);
   fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack), thrust * Math.sin(angleOfAttack), 0);
-  fWeight = new THREE.Vector3(0, -(fullMass * 9.8), 0);
-  vectorRocket.addVectors(fWeight, fThrust);
-  acceleration = vectorRocket.divideScalar(fullMass); 
-  velocity = velocity.addScaledVector(acceleration,dt);
-  rocketPosition = rocketPosition.addScaledVector(velocity, dt);
 
-  // console.log(acceleration,velocity);
+  weight = gravityConst * fullMass * earthMass / (r * r * 1000000);
+
+  fWeight = new THREE.Vector3(0, -weight, 0);
+
+
+  drag = 0.5 * rho * dragCoefficient * referenceArea * velocity.length() * velocity.length();
+  fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
+
+
+
+
+  // r += rocketPosition.y;
+
+
+  // console.log(vectorCOG);
+  // console.log();
+  // console.log(Math.pow(5,2));
+  // console.log(groupRocket.position);
   // console.log(Math.cos(angleOfAttack));
 
 
@@ -403,15 +399,46 @@ function updatePhysics() {
   //   position += velocity * dt;
 
   if (groupRocket.position.y < 0) {
-    groupRocket.position.x = 100;
-    groupRocket.position.y = -1;
-    groupRocket.position.z = 100;
+    groupRocket.position.x = 0;
+    groupRocket.position.y = -0.1;
+    groupRocket.position.z = 5;
     groupRocket.rotation.z = - Math.PI / 2;
   } else {
     groupRocket.position.add(rocketPosition);
   }
   //  console.log(groupRocket.position,rocketPosition);
 }
+
+
+
+//this code runs every second 
+setInterval(function () {
+
+
+
+  if (fullMass > rocketMass) {
+    fuelMass -= mdot;
+    fullMass = fuelMass + rocketMass;
+  }
+
+  if (fullMass <= rocketMass) {
+    fullMass = rocketMass;
+    fuelMass = 0;
+  }
+
+  vectorCOG.addVectors(fWeight, fThrust);
+  vectorCOP.add(fDrag/*,fLift */);
+  vectorRocket.addVectors(vectorCOG, vectorCOP);
+
+  acceleration = vectorRocket.divideScalar(fullMass);
+  velocity = velocity.addScaledVector(acceleration, dt);
+  rocketPosition = rocketPosition.addScaledVector(velocity, dt);
+
+  console.log(fDrag);
+  // console.log(fuelMass, fullMass);
+
+
+}, 1000);
 
 
 
@@ -427,10 +454,20 @@ function animate() {
   }, 1000 / 30);
 
 
-
+  updatePhysics();
   render();
 
-  updatePhysics();
+  // if (fullMass > rocketMass) {
+  //   fuelMass -= mdot;
+  //   fullMass = fuelMass + rocketMass;
+  // }
+
+  // if (fullMass <= rocketMass) {
+  //   fullMass = rocketMass;
+  //   fuelMass = 0;
+  // }
+
+  // updatePhysics();
   // sphere.rotation.y+=0.001
   earthMesh.rotation.y += 0.0015;
   cloudMesh.rotation.y += 0.0010;
