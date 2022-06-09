@@ -12,6 +12,7 @@ import { Sky } from 'three/examples/jsm/objects/Sky.js';
 import { BackSide } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import RocketBody from './assets/src/scripts/rocke_body';
+import { AxesHelper } from 'three';
 console.log(THREE);
 
 //console.log(vertexShader);
@@ -34,7 +35,7 @@ let fThrust, fWeight, mdot, rocketMass, fuelMass, fullMass, angleOfAttack, zero,
 //center of pressure 
 let fDrag, drag, referencArea, rho, dragCoefficient;
 //euler
-let velocity, acceleration,dt = 0.01,rocketPosition;
+let velocity, acceleration, dt = 0.01, rocketPosition;
 init();
 animate();
 // InitialPhyisics();
@@ -46,6 +47,7 @@ function init() {
   camera.position.z = 200;
   camera.position.y = 120;
 
+  scene.add(new THREE.AxesHelper(5000));
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -320,8 +322,8 @@ function init() {
   rocketMass = 200;
   fuelMass = 10;
   fullMass = rocketMass + fuelMass;
-  fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack) , thrust * Math.sin(angleOfAttack) , 0);
-  fWeight = new THREE.Vector3(0, -(fullMass * 9.8) , 0);
+  fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack), thrust * Math.sin(angleOfAttack), 0);
+  fWeight = new THREE.Vector3(0, -(fullMass * 9.8), 0);
 
   acceleration = new THREE.Vector3();
   velocity = new THREE.Vector3();
@@ -330,7 +332,12 @@ function init() {
   // fDrag = new THREE.Vector3( - drag * Math.cos(angleOfAttack) /1000, -drag * Math.sin(angleOfAttack)/1000, 0);
 
 
-
+  var aziz = new THREE.Vector3(2, 4, 6);
+  console.log(aziz, 'aziz');
+  //  aziz.multiplyScalar(2);
+  aziz = aziz.addScaledVector(aziz,2);
+  console.log(aziz);
+ 
 
   //euler
 
@@ -368,7 +375,7 @@ setInterval(function () {
 function updatePhysics() {
 
 
-  
+
   if (fuelMass == 0) {
     zero = new THREE.Vector3(0, 0, 0);
     fThrust.copy(zero);
@@ -376,16 +383,23 @@ function updatePhysics() {
 
   // console.log(fWeight,fThrust);
   //  console.log(groupRocket.position,fuelMass);
-
+  fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack), thrust * Math.sin(angleOfAttack), 0);
+  fWeight = new THREE.Vector3(0, -(fullMass * 9.8), 0);
   vectorRocket.addVectors(fWeight, fThrust);
-  acceleration   = vectorRocket.divideScalar(fullMass);
-  velocity       = velocity.add(acceleration.multiplyScalar(dt));
-  rocketPosition = rocketPosition.add(velocity.multiplyScalar(dt));
-console.log(rocketPosition);
-  
+  acceleration = vectorRocket.divideScalar(fullMass); 
+  velocity = velocity.addScaledVector(acceleration,dt);
+  rocketPosition = rocketPosition.addScaledVector(velocity, dt);
+
+  // console.log(acceleration,velocity);
+  // console.log(Math.cos(angleOfAttack));
 
 
-  // velocity += acceleration * dt;
+
+  // console.log(rocketPosition);
+
+
+
+  //   velocity += acceleration * dt;
   //   position += velocity * dt;
 
   if (groupRocket.position.y < 0) {
@@ -396,7 +410,7 @@ console.log(rocketPosition);
   } else {
     groupRocket.position.add(rocketPosition);
   }
-  //  console.log(groupRocket.position);
+  //  console.log(groupRocket.position,rocketPosition);
 }
 
 
