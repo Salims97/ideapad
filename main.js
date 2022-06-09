@@ -97,7 +97,7 @@ function init() {
 
 
   // cloud Geometry
-  const cloudGeometry = new THREE.SphereGeometry(103, 50, 50);
+  const cloudGeometry = new THREE.SphereGeometry(102, 50, 50);
 
   // cloud metarial
   const cloudMetarial = new THREE.MeshPhongMaterial({
@@ -203,24 +203,24 @@ function init() {
 
   // Skybox
 
-  const sky = new Sky();
-  sky.scale.setScalar(1);
-  sky.geometry = new THREE.SphereGeometry(100);
-  //scene.add( sky );
+  // const sky = new Sky();
+  // sky.scale.setScalar(1);
+  // sky.geometry = new THREE.SphereGeometry(100);
+  // //scene.add( sky );
 
-  const skyUniforms = sky.material.uniforms;
+  // const skyUniforms = sky.material.uniforms;
 
-  skyUniforms['turbidity'].value = 10;
-  skyUniforms['rayleigh'].value = 2;
-  skyUniforms['mieCoefficient'].value = 0.005;
-  skyUniforms['mieDirectionalG'].value = 0.8;
+  // // skyUniforms['turbidity'].value = 10;
+  // // skyUniforms['rayleigh'].value = 2;
+  // // skyUniforms['mieCoefficient'].value = 0.005;
+  // // skyUniforms['mieDirectionalG'].value = 0.8;
 
-  const parameters = {
-    elevation: 2,
-    azimuth: 180
-  };
+  // const parameters = {
+  //   elevation: 2,
+  //   azimuth: 180
+  // };
 
-  const pmremGenerator = new THREE.PMREMGenerator(renderer);
+  // const pmremGenerator = new THREE.PMREMGenerator(renderer);
   const sky1 = new THREE.TextureLoader().load('image/Sky.jpeg');
   const geometryS = new THREE.SphereGeometry(100, 50, 50);
   const materialS1 = new THREE.MeshBasicMaterial({ map: sky1, transparent: false });
@@ -228,22 +228,22 @@ function init() {
   earth1.material.side = THREE.BackSide;
   scene.add(earth1);
 
-  function updateSun() {
+  // function updateSun() {
 
-    const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);
-    const theta = THREE.MathUtils.degToRad(parameters.azimuth);
+  //   const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);
+  //   const theta = THREE.MathUtils.degToRad(parameters.azimuth);
 
-    sun.setFromSphericalCoords(1, phi, theta);
+  //   sun.setFromSphericalCoords(1, phi, theta);
 
-    sky.material.uniforms['sunPosition'].value.copy(sun);
-    water.material.uniforms['sunDirection'].value.copy(sun).normalize();
+  //   sky.material.uniforms['sunPosition'].value.copy(sun);
+  //   water.material.uniforms['sunDirection'].value.copy(sun).normalize();
 
-    scene.environment = pmremGenerator.fromScene(sky).texture;
+  //   scene.environment = pmremGenerator.fromScene(sky).texture;
 
-  }
+  // }
 
-  updateSun();
-  const waterUniforms = water.material.uniforms;
+  // updateSun();
+  // const waterUniforms = water.material.uniforms;
 
 
 
@@ -433,8 +433,9 @@ setInterval(function () {
   acceleration = vectorRocket.divideScalar(fullMass);
   velocity = velocity.addScaledVector(acceleration, dt);
   rocketPosition = rocketPosition.addScaledVector(velocity, dt);
+  r = groupRocket.position.y + 6278;
 
-  console.log(fDrag);
+  console.log(r);
   // console.log(fuelMass, fullMass);
 
 
