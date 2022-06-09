@@ -458,30 +458,13 @@ function animate() {
   updatePhysics();
   render();
 
-  // if (fullMass > rocketMass) {
-  //   fuelMass -= mdot;
-  //   fullMass = fuelMass + rocketMass;
-  // }
 
-  // if (fullMass <= rocketMass) {
-  //   fullMass = rocketMass;
-  //   fuelMass = 0;
-  // }
-
-  // updatePhysics();
-  // sphere.rotation.y+=0.001
   earthMesh.rotation.y += 0.0015;
   cloudMesh.rotation.y += 0.0010;
   starMesh.rotation.y += 0.0005;
 
   group.rotation.y += 0.001;
   group.rotation.y = mouse.x * 0.5;
-  //groupRocket.rotation.y+=0.01;
-  // groupRocket.position.add(vectorRocket);
-  // console.log(groupRocket.position);
-
-
-
 
 
 }
