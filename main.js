@@ -26,6 +26,8 @@ let camera, scene, renderer;
 let controls, water, sun;
 let earthMesh, cloudMesh, starMesh, group, seaEarthMesh,grouproket;
 let mouse;
+let fthrust;
+let rockets1,oxigen_cylinder10,oxigen_cylinder20;
 init();
 animate();
 function init() {
@@ -227,6 +229,7 @@ function init() {
 
   updateSun();
   const waterUniforms = water.material.uniforms;
+fthrust=new THREE.Vector3(0,0.1,0)
 
 
 
@@ -253,12 +256,12 @@ grouproket=new THREE.Group();
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
       const rockets = gltf.scene;
-      console.log(rockets);
+      //console.log(rockets);
      // scene.add(rockets);
 
       rockets.position.set(0, 80, 0);
       rockets.scale.set(40, 40, 40);
-      grouproket.add(rockets)
+     grouproket.add(rockets)
     }
   );
 
@@ -271,7 +274,7 @@ grouproket=new THREE.Group();
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
     (gltf) => {
       const oxigenCylinder = gltf.scene;
-      console.log(oxigenCylinder);
+     // console.log(oxigenCylinder);
       //scene.add(oxigenCylinder);
 
       oxigenCylinder.position.set(8, 30, 0);
@@ -282,7 +285,7 @@ grouproket=new THREE.Group();
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
     (gltf) => {
       const oxigenCylinder1 = gltf.scene;
-      console.log(oxigenCylinder1);
+     // console.log(oxigenCylinder1);
       //scene.add(oxigenCylinder1);
 
       oxigenCylinder1.position.set(-8, 30, 0);
@@ -294,6 +297,14 @@ grouproket=new THREE.Group();
 
   
   scene.add(grouproket);
+
+
+ 
+
+
+
+
+
 
  // addCylinder(8,30,0);
   //addCylinder(-8,30,0);
@@ -311,7 +322,8 @@ function animate() {
   group.rotation.y += 0.001;
   group.rotation.y = mouse.x * 0.5;
 //grouproket.rotation.y+=0.01;
-  grouproket.position.y+=0.1
+//  grouproket.position.y+=0.1
+grouproket.position.add(fthrust);
 }
 
 function render() {

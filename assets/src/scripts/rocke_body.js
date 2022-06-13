@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
 
-
 export default class RocketBody{
 
     constructor(name,model,position,mass,velocity,acceleration ){
@@ -10,6 +9,7 @@ export default class RocketBody{
         this.mass = mass;
         this.velocity = velocity;
         this.acceleration = acceleration;
+     
 
     }
     
