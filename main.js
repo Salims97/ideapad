@@ -265,7 +265,7 @@ function init() {
   );
 
   groupRocket = new THREE.Group();
-  vectorRocket = new THREE.Vector3(0, 0.1, 0);
+  vectorRocket = new THREE.Vector3(0, 0, 0);
   //rocket
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
