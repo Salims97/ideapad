@@ -1,24 +1,15 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-<<<<<<< HEAD
-export default class RocketBody{
-
-    constructor(name,model,position,mass,velocity,acceleration ){
-=======
 let gltfLoader,scene;
 export default class RocketBody {
 
     constructor(name, position, mass, velocity, acceleration, rotation) {
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
         this.name = name;
         this.position = position;
         this.mass = mass;
         this.velocity = velocity;
         this.acceleration = acceleration;
-<<<<<<< HEAD
-     
-=======
         this.rotation = rotation;
     }
 
@@ -82,7 +73,6 @@ export default class RocketBody {
         scene.add( cube );
         console.log('aziz');
       }
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
 
     }
 

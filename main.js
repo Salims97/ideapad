@@ -27,10 +27,6 @@ let camera, scene, renderer;
 let controls, water, sun;
 let earthMesh, cloudMesh, starMesh, group, seaEarthMesh;
 let mouse;
-<<<<<<< HEAD
-let fthrust;
-let rockets1,oxigen_cylinder10,oxigen_cylinder20;
-=======
 //model
 let vectorRocket, groupRocket, vectorCOG, vectorCOP;
 //physics:
@@ -42,7 +38,6 @@ let gravityConst = 6.67428 * Math.pow(10, -11), r = 6278, earthMass = 5.97219 * 
 let fDrag, drag, referenceArea, rho, dragCoefficient;
 //euler
 let velocity, acceleration, dt = 0.01, rocketPosition;
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
 init();
 animate();
 // InitialPhyisics();
@@ -247,14 +242,8 @@ function init() {
 
   // }
 
-<<<<<<< HEAD
-  updateSun();
-  const waterUniforms = water.material.uniforms;
-fthrust=new THREE.Vector3(0,0.1,0)
-=======
   // updateSun();
   // const waterUniforms = water.material.uniforms;
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
 
 
 
@@ -281,21 +270,12 @@ fthrust=new THREE.Vector3(0,0.1,0)
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
       const rockets = gltf.scene;
-<<<<<<< HEAD
-      //console.log(rockets);
-     // scene.add(rockets);
-
-      rockets.position.set(0, 80, 0);
-      rockets.scale.set(40, 40, 40);
-     grouproket.add(rockets)
-=======
       // console.log(rockets);
       // scene.add(rockets);
 
       rockets.position.set(0, 3.9, 0);
       rockets.scale.set(2, 2, 2);
       groupRocket.add(rockets);
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
     }
   );
 
@@ -308,11 +288,7 @@ fthrust=new THREE.Vector3(0,0.1,0)
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
     (gltf) => {
       const oxigenCylinder = gltf.scene;
-<<<<<<< HEAD
-     // console.log(oxigenCylinder);
-=======
       // console.log(oxigenCylinder);
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
       //scene.add(oxigenCylinder);
 
       oxigenCylinder.position.set(0.45, 1.5, 0);
@@ -323,11 +299,7 @@ fthrust=new THREE.Vector3(0,0.1,0)
   gltfLoader.load('assets/models/oxigen_cylinder/scene.gltf',
     (gltf) => {
       const oxigenCylinder1 = gltf.scene;
-<<<<<<< HEAD
-     // console.log(oxigenCylinder1);
-=======
       // console.log(oxigenCylinder1);
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
       //scene.add(oxigenCylinder1);
 
       oxigenCylinder1.position.set(-0.45, 1.5, 0);
@@ -338,21 +310,9 @@ fthrust=new THREE.Vector3(0,0.1,0)
 
 
 
-<<<<<<< HEAD
-
- 
-
-
-
-
-
-
- // addCylinder(8,30,0);
-=======
   scene.add(groupRocket);
 
   // addCylinder(8,30,0);
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
   //addCylinder(-8,30,0);
 
 
@@ -505,14 +465,8 @@ function animate() {
 
   group.rotation.y += 0.001;
   group.rotation.y = mouse.x * 0.5;
-<<<<<<< HEAD
-//grouproket.rotation.y+=0.01;
-//  grouproket.position.y+=0.1
-grouproket.position.add(fthrust);
-=======
 
 
->>>>>>> 1f923fbad091e1990732f5e9e6075175901194e4
 }
 
 function render() {
