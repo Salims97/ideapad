@@ -343,7 +343,8 @@ function init() {
 
 
   //euler
-
+  //   velocity += acceleration * dt;
+  //   position += velocity * dt;
 
 }
 
@@ -394,9 +395,6 @@ function updatePhysics() {
   // console.log(rocketPosition);
 
 
-
-  //   velocity += acceleration * dt;
-  //   position += velocity * dt;
 
   if (groupRocket.position.y < 0) {
     groupRocket.position.x = 0;
