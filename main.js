@@ -13,6 +13,7 @@ import { BackSide } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import RocketBody from './assets/src/scripts/rocke_body';
 import { AxesHelper } from 'three';
+import {GUI}from 'dat.gui';
 console.log(THREE);
 
 //console.log(vertexShader);
@@ -38,6 +39,7 @@ let gravityConst = 6.67428 * Math.pow(10, -11), r = 6278, earthMass = 5.97219 * 
 let fDrag, drag, referenceArea, rho, dragCoefficient;
 //euler
 let velocity, acceleration, dt = 0.01, rocketPosition;
+var control;
 init();
 animate();
 // InitialPhyisics();
@@ -265,7 +267,7 @@ function init() {
   );
 
   groupRocket = new THREE.Group();
-  vectorRocket = new THREE.Vector3(0, 0, 0);
+  vectorRocket = new THREE.Vector3(0, 0.1, 0);
   //rocket
   gltfLoader.load('assets/models/rocket_model/scene.gltf',
     (gltf) => {
@@ -323,7 +325,7 @@ function init() {
   mdot = 3000;
   rocketMass = 33000;
   fuelMass = 30000;
-  fullMass = rocketMass + fuelMass;
+
 
   rho = 1.3;
   referenceArea = 0.112;
@@ -343,8 +345,31 @@ function init() {
 
 
   //euler
-  //   velocity += acceleration * dt;
-  //   position += velocity * dt;
+
+//conrol -gui
+control=new function(){
+  this.thrust=3800000;
+  this.fuelMass=30000;
+  this.rho=1;
+}
+addControls(control);
+function addControls(controlObject){
+  var gui=new GUI();
+  gui.add(controlObject,'thrust',1000000,3800000)
+  gui.add(controlObject,'fuelMass',20000,50000)
+  gui.add(controlObject,'rho',0.5,1.5);
+  
+}
+fullMass = rocketMass + control.fuelMass;
+
+
+  // var gui=new GUI();
+  // var thrustGui=gui.addFolder('thrust');
+  // thrustGui.add(thrust,'thrust',thrust=100000,thrust=380000).listen();
+  // thrustGui.open();
+  // var fuelmassGui;
+  // var rhoGui;
+  
 
 }
 
@@ -362,20 +387,22 @@ function updatePhysics() {
 
 
 
-  if (fuelMass == 0) {
-    thrust = 0;
+  if (control.fuelMass == 0) {
+    control.thrust = 0;
   }
 
   // console.log(fWeight,fThrust);
   //  console.log(groupRocket.position,fuelMass);
-  fThrust = new THREE.Vector3(thrust * Math.cos(angleOfAttack), thrust * Math.sin(angleOfAttack), 0);
+  //console.log(control.thrust);
+  console.log(fThrust);
+  fThrust = new THREE.Vector3(control.thrust * Math.cos(angleOfAttack), control.thrust * Math.sin(angleOfAttack), 0);
 
   weight = gravityConst * fullMass * earthMass / (r * r * 1000000);
 
   fWeight = new THREE.Vector3(0, -weight, 0);
 
 
-  drag = 0.5 * rho * dragCoefficient * referenceArea * velocity.length() * velocity.length();
+  drag = 0.5 * control.rho * dragCoefficient * referenceArea * velocity.length() * velocity.length();
   fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
 
 
@@ -396,6 +423,9 @@ function updatePhysics() {
 
 
 
+  //   velocity += acceleration * dt;
+  //   position += velocity * dt;
+
   if (groupRocket.position.y < 0) {
     groupRocket.position.x = 0;
     groupRocket.position.y = -0.1;
@@ -415,13 +445,13 @@ setInterval(function () {
 
 
   if (fullMass > rocketMass) {
-    fuelMass -= mdot;
-    fullMass = fuelMass + rocketMass;
+    control.fuelMass -= mdot;
+    fullMass = control.fuelMass + rocketMass;
   }
 
   if (fullMass <= rocketMass) {
-    fullMass = rocketMass;
-    fuelMass = 0;
+    fullMass= rocketMass;
+    control.fuelMass = 0;
   }
 
   vectorCOG.addVectors(fWeight, fThrust);
@@ -438,7 +468,6 @@ setInterval(function () {
 
 
 }, 1000);
-
 
 
 

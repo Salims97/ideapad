@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/dat.gui": "^0.7.7",
+    "dat.gui": "^0.7.9",
     "vite": "^2.9.9",
     "vite-plugin-string": "^1.1.2"
   },
