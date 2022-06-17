@@ -9,7 +9,7 @@ import { GUI } from 'dat.gui';
 
 
 
-let camera, camera1, scene, renderer;
+let camera, camera1, camera2, scene, renderer;
 let controls, water, sun;
 let earthMesh, cloudMesh, starMesh, group, seaEarthMesh, arrow;
 let mouse;
@@ -33,8 +33,8 @@ var control;
 //rotate 
 let temp, dir, temp1, length1, angle, centerOfEarth, rotateAngle;
 
-
-
+//delta V
+let v0Temp = 0, v1Temp = 0, x;
 
 init();
 animate();
@@ -45,6 +45,7 @@ function init() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 25000);
   camera1 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 25000);
+  camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 25000);
   camera.position.z = 1;
   camera.position.y = 0.5;
 
@@ -257,6 +258,7 @@ function init() {
     this.rho = 1.3;
     this.liftCoefficient = 0.5;
     this.dragCoefficient = 0.75;
+    this.x = 0;
   };
   addControls(control);
   function addControls(controlObject) {
@@ -266,6 +268,7 @@ function init() {
     gui.add(controlObject, 'rho', 0.5, 1.5);
     gui.add(controlObject, 'liftCoefficient', 0.3, 1.6);
     gui.add(controlObject, 'dragCoefficient', 0.4, 1.05);
+    gui.add(controlObject, 'x', 0, 2);
   }
   fullMass = rocketMass + control.fuelMass;
   window.addEventListener("keydown", function (event) {
@@ -340,14 +343,18 @@ function updatePhysics() {
   } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
     groupRocket.rotation.z = -rotateAngle;
   }
+
+
+
+  //cameras positions
+  camera1.position.set(groupRocket.position.x, groupRocket.position.y + 0.1, groupRocket.position.z + 0.5);
+  camera2.position.set(0, 0, 300);
+
+
+
+
+
 }
-
-
-
-
-
-
-
 
 //this code runs every second 
 setInterval(function () {
@@ -441,7 +448,13 @@ function animate() {
 function render() {
   water.material.uniforms['time'].value += 1.0 / 60.0;
 
-  renderer.render(scene, camera);
+  if (Math.round(control.x) == 0) {
+    renderer.render(scene, camera);
+  } else if (Math.round(control.x) == 1) {
+    renderer.render(scene, camera1);
+  } else if (Math.round(control.x) == 2) {
+    renderer.render(scene, camera2);
+  }
 }
 
 
