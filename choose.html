@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vite App</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <img src="../image/launch.jpg" style="width:100%">
+  <img src="../image/atlas v.jpg" style="width:49%; position:relative; top:-800px; right:-150px">
+  <img src="../image/saturn v.jpg" style="width:49%; position:relative; top:-800px; right:150px ;">
+  <h1 style="position:relative; left:250px ; top:-1500px; color:red ">Atlas V</h1>
+  <h1 style="position:relative;  left:1060px; top:-1550px; color:red ">Saturn V</h1>
+  
+  <h2 style="position:relative ; left:200px ; top:-1520px;">rocket mass: 333000 kg</h2>
+  <h2 style="position:relative ; left:200px ; top:-1520px;">rocket height: 60 m</h2>
+  <h2 style="position:relative ; left:200px ; top:-1520px;">rocket width: 5 m</h2>
+  <h2 style="position:relative ; left:200px ; top:-1520px;">maximum thrust: 3800000 N</h2>
+  <h2 style="position:relative ; left:200px ; top:-1520px;">engines count: 2</h2>
+  <h2 style="position:relative ; left:200px ; top:-1520px;">mdot: 1250 * 2 kg/s</h2>
+
+
+  <h2 style="position:relative ; left:1020px; top:-1800px;">rocket mass: 2822000 kg</h2>
+  <h2 style="position:relative ; left:1020px; top:-1800px;">rocket height: 100 m</h2>
+  <h2 style="position:relative ; left:1020px; top:-1800px;">rocket width: 10 m</h2>
+  <h2 style="position:relative ; left:1020px; top:-1800px;">maximum thrust: 33360000 N</h2>
+  <h2 style="position:relative ; left:1020px; top:-1800px;">engines count: 5</h2>
+  <h2 style="position:relative ; left:1020px; top:-1800px;">mdot: 2578 * 5 kg/s</h2>
+  
+  <button type="button" value="Submit" onclick="atlas()" style="color:rgb(42, 3, 168) ; position:relative ; left:250px ; top:-1770px;">
+    start launch
+    <div id='mylink'></div>
+  </button>
+  
+
+  <button type="button" value="Submit" onclick="saturn()" style="color:rgb(42, 3, 168) ; position:relative ; left:990px; top:-1770px;">
+    start launch
+    <div id='mylink'></div>
+  </button>
+  <script>
+    function remove(el) {
+      var element = el;
+      element.remove();
+    }
+    function atlas() {
+      window.open("./atlas_v.html",'_self');
+    }
+    function saturn() {
+      window.open('./saturn_v.html','_self');
+    }
+  </script>
+</body>
+</html>
