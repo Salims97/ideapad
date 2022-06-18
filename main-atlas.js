@@ -6,10 +6,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Water } from 'three/examples/jsm/objects/Water.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GUI } from 'dat.gui';
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 
-
-let camera, camera1,camera2, scene, renderer;
+let camera, camera1, camera2, scene, renderer;
 let controls, water, sun;
 let earthMesh, cloudMesh, starMesh, cylinderGroup, seaEarthMesh, arrow;
 let mouse;
@@ -36,6 +37,9 @@ let temp, dir, temp1, length1, angle, centerOfEarth, rotateAngle, origin;
 //delta V
 let v0Temp = 0, v1Temp = 0, x;
 
+//message 
+let loaderF, geometryF, materialF, meshF;
+
 init();
 animate();
 // InitialPhyisics();
@@ -60,7 +64,7 @@ function init() {
 
 
 
-  const earthGeometry = new THREE.SphereGeometry(100, 378, 50, 50);
+  const earthGeometry = new THREE.SphereGeometry(100, 100, 50, 50);
 
   // earth material
   const earthMaterial = new THREE.MeshPhongMaterial({
@@ -79,7 +83,7 @@ function init() {
 
   // point light
   const pointLight = new THREE.PointLight(0xffffff, 0.9);
-  pointLight.position.set(16000, 50, 50);
+  pointLight.position.set(1000, 50, 50);
   scene.add(pointLight);
 
 
@@ -269,7 +273,7 @@ function init() {
     gui.add(controlObject, 'liftCoefficient', 0.3, 1.6);
     gui.add(controlObject, 'dragCoefficient', 0.4, 1.05);
     gui.add(controlObject, 'x', 0, 2);
- }
+  }
   fullMass = rocketMass + control.fuelMass;
   window.addEventListener("keydown", function (event) {
     if (event.defaultPrevented) {
@@ -310,6 +314,7 @@ function updatePhysics() {
   fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
   fLift = new THREE.Vector3(-lift * Math.cos(angleOfAttack + Math.PI / 2), -lift * Math.sin(angleOfAttack + Math.PI / 2), 0);
 
+  //launch failed  condition 
   if (groupRocket.position.y < 0) {
     groupRocket.position.x = groupRocket.position.x;
     groupRocket.position.y = -0.01;
@@ -319,6 +324,24 @@ function updatePhysics() {
     cylinderGroup.position.y = -0.01;
     cylinderGroup.position.z = groupRocket.position.z;
     cylinderGroup.rotation.z = -Math.PI / 2;
+
+    loaderF = new FontLoader();
+    loaderF.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
+
+      geometryF = new TextGeometry('Launch Failed!!!', {
+        font: font,
+        size: 3,
+        height: 0.1,
+      });
+    });
+    materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+
+    meshF = new THREE.Mesh(geometryF, materialF);
+    meshF.position.x = -15;
+    meshF.position.y = 1;
+    meshF.position.z = -25;
+    meshF.rotation.x = -0.5;
+    scene.add(meshF);
   } else {
     groupRocket.position.add(rocketPosition);
     cylinderGroup.position.add(rocketPosition);
@@ -329,30 +352,33 @@ function updatePhysics() {
   }
 
   rotateAngle = Math.PI / 2 - angleOfAttack;
-  if (!isNaN(thetaRocket) && groupRocket.position.length() > 1 && groupRocket.position.length() <= 10) {
-    groupRocket.rotation.z = -rotateAngle / 10;
-    cylinderGroup.rotation.z = -rotateAngle / 10;
-  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 10 && groupRocket.position.length() <= 35) {
-    groupRocket.rotation.z = -rotateAngle / 5;
-    cylinderGroup.rotation.z = -rotateAngle / 5;
-  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 35 && groupRocket.position.length() <= 49) {
-    groupRocket.rotation.z = -rotateAngle / 3;
-    cylinderGroup.rotation.z = -rotateAngle / 3;
-  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 49 && groupRocket.position.length() <= 65) {
-    groupRocket.rotation.z = -rotateAngle / 2;
-    cylinderGroup.rotation.z = -rotateAngle / 2;
-  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 65 && groupRocket.position.length() <= 85) {
-    groupRocket.rotation.z = -rotateAngle / 1.5;
-    cylinderGroup.rotation.z = -rotateAngle / 1.5;
-  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
-    groupRocket.rotation.z = -rotateAngle;
-    cylinderGroup.rotation.z = -rotateAngle;
-  } 
-
-
+  // if (!isNaN(thetaRocket) && groupRocket.position.length() > 1 && groupRocket.position.length() <= 10) {
+  //   groupRocket.rotation.z = -rotateAngle / 10;
+  //   cylinderGroup.rotation.z = -rotateAngle / 10;
+  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 10 && groupRocket.position.length() <= 35) {
+  //   groupRocket.rotation.z = -rotateAngle / 5;
+  //   cylinderGroup.rotation.z = -rotateAngle / 5;
+  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 35 && groupRocket.position.length() <= 49) {
+  //   groupRocket.rotation.z = -rotateAngle / 3;
+  //   cylinderGroup.rotation.z = -rotateAngle / 3;
+  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 49 && groupRocket.position.length() <= 65) {
+  //   groupRocket.rotation.z = -rotateAngle / 2;
+  //   cylinderGroup.rotation.z = -rotateAngle / 2;
+  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 65 && groupRocket.position.length() <= 85) {
+  //   groupRocket.rotation.z = -rotateAngle / 1.5;
+  //   cylinderGroup.rotation.z = -rotateAngle / 1.5;
+  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
+  //   groupRocket.rotation.z = -rotateAngle;
+  //   cylinderGroup.rotation.z = -rotateAngle;
+  // }
+  v0Temp = groupRocket.position;
+  centerOfEarth.add(v0Temp.negate());
+  // if(groupRocket.position.length() >= 1 ){
+  //  groupRocket.rotateOnAxis(centerOfEarth.normalize(),rotateAngle);
+  // }
   //cameras positions
-  camera1.position.set(groupRocket.position.x, groupRocket.position.y + 0.025, groupRocket.position.z + 0.5);
-  camera2.position.set(0,0, 300);
+  camera1.position.set(groupRocket.position.x, groupRocket.position.y + 0.025, groupRocket.position.z + 0.2);
+  camera2.position.set(0, 0, 300);
 
 }
 
@@ -447,7 +473,7 @@ function animate() {
 
 function render() {
   water.material.uniforms['time'].value += 1.0 / 60.0;
- 
+
   if (Math.round(control.x) == 0) {
     renderer.render(scene, camera);
   } else if (Math.round(control.x) == 1) {

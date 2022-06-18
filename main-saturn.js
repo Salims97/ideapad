@@ -6,7 +6,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Water } from 'three/examples/jsm/objects/Water.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GUI } from 'dat.gui';
-
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 
 let camera, camera1, camera2, scene, renderer;
@@ -36,6 +37,9 @@ let temp, dir, temp1, length1, angle, centerOfEarth, rotateAngle;
 //delta V
 let v0Temp = 0, v1Temp = 0, x;
 
+//message 
+let loaderF, geometryF, materialF, meshF;
+
 init();
 animate();
 // InitialPhyisics();
@@ -60,7 +64,7 @@ function init() {
 
 
 
-  const earthGeometry = new THREE.SphereGeometry(100, 378, 50, 50);
+  const earthGeometry = new THREE.SphereGeometry(100, 100, 50, 50);
 
   // earth material
   const earthMaterial = new THREE.MeshPhongMaterial({
@@ -79,7 +83,7 @@ function init() {
 
   // point light
   const pointLight = new THREE.PointLight(0xffffff, 0.9);
-  pointLight.position.set(16000, 50, 50);
+  pointLight.position.set(1000, 50, 50);
   scene.add(pointLight);
 
 
@@ -309,12 +313,31 @@ function updatePhysics() {
 
   fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
   fLift = new THREE.Vector3(-lift * Math.cos(angleOfAttack + Math.PI / 2), -lift * Math.sin(angleOfAttack + Math.PI / 2), 0);
-
+  
+  //launch failed condition
   if (groupRocket.position.y < 0) {
-    groupRocket.position.x = groupRocket.position.x;
+    groupRocket.position.x = groupRocket.position.x ;
     groupRocket.position.y = -0.01;
     groupRocket.position.z = groupRocket.position.z;
     groupRocket.rotation.z = -Math.PI / 2;
+
+    loaderF = new FontLoader();
+    loaderF.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
+
+      geometryF = new TextGeometry('Launch Failed!!!', {
+        font: font,
+        size: 3,
+        height: 0.1,
+      });
+    });
+    materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+
+    meshF = new THREE.Mesh(geometryF, materialF);
+    meshF.position.x = -15;
+    meshF.position.y = 1;
+    meshF.position.z = -25;
+    meshF.rotation.x = -0.5;
+    scene.add(meshF);
   } else {
     groupRocket.position.add(rocketPosition);
   }
