@@ -265,7 +265,7 @@ function init() {
     this.rho = 1.3;
     this.liftCoefficient = 0.5;
     this.dragCoefficient = 0.75;
-    this.x = 0;
+    this.camera = 0;
   };
   addControls(control);
   function addControls(controlObject) {
@@ -275,7 +275,7 @@ function init() {
     gui.add(controlObject, 'rho', 0.5, 1.5);
     gui.add(controlObject, 'liftCoefficient', 0.3, 1.6);
     gui.add(controlObject, 'dragCoefficient', 0.4, 1.05);
-    gui.add(controlObject, 'x', 0, 2, 1);
+    gui.add(controlObject, 'camera', 0, 2, 1);
   }
   fullMass = rocketMass + control.fuelMass;
   window.addEventListener("keydown", function (event) {
@@ -512,11 +512,11 @@ function animate() {
 function render() {
   water.material.uniforms['time'].value += 1.0 / 60.0;
 
-  if (control.x == 0) {
+  if (control.camera == 0) {
     renderer.render(scene, camera);
-  } else if (control.x == 1) {
+  } else if (control.camera == 1) {
     renderer.render(scene, camera1);
-  } else if (control.x == 2) {
+  } else if (control.camera == 2) {
     renderer.render(scene, camera2);
   }
 }
