@@ -333,9 +333,9 @@ function updatePhysics() {
     materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
 
     meshF = new THREE.Mesh(geometryF, materialF);
-    meshF.position.x = -15;
-    meshF.position.y = 1;
-    meshF.position.z = -25;
+    meshF.position.x = groupRocket.position.x -15;
+    meshF.position.y = groupRocket.position.y + 3;
+    meshF.position.z = groupRocket.position.z - 25;
     meshF.rotation.x = -0.5;
     scene.add(meshF);
   } else {
@@ -366,6 +366,7 @@ function updatePhysics() {
   } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
     groupRocket.rotation.z = -rotateAngle;
   }
+
 
 
 
@@ -446,7 +447,7 @@ setInterval(function () {
 
 
 
-  
+
 }, 1000);
 
 

@@ -337,9 +337,9 @@ function updatePhysics() {
     materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
 
     meshF = new THREE.Mesh(geometryF, materialF);
-    meshF.position.x = -15;
-    meshF.position.y = 1;
-    meshF.position.z = -25;
+    meshF.position.x = groupRocket.position.x -15;
+    meshF.position.y = groupRocket.position.y + 3;
+    meshF.position.z = groupRocket.position.z - 25;
     meshF.rotation.x = -0.5;
     scene.add(meshF);
   } else {
@@ -352,30 +352,28 @@ function updatePhysics() {
   }
 
   rotateAngle = Math.PI / 2 - angleOfAttack;
-  // if (!isNaN(thetaRocket) && groupRocket.position.length() > 1 && groupRocket.position.length() <= 10) {
-  //   groupRocket.rotation.z = -rotateAngle / 10;
-  //   cylinderGroup.rotation.z = -rotateAngle / 10;
-  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 10 && groupRocket.position.length() <= 35) {
-  //   groupRocket.rotation.z = -rotateAngle / 5;
-  //   cylinderGroup.rotation.z = -rotateAngle / 5;
-  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 35 && groupRocket.position.length() <= 49) {
-  //   groupRocket.rotation.z = -rotateAngle / 3;
-  //   cylinderGroup.rotation.z = -rotateAngle / 3;
-  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 49 && groupRocket.position.length() <= 65) {
-  //   groupRocket.rotation.z = -rotateAngle / 2;
-  //   cylinderGroup.rotation.z = -rotateAngle / 2;
-  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 65 && groupRocket.position.length() <= 85) {
-  //   groupRocket.rotation.z = -rotateAngle / 1.5;
-  //   cylinderGroup.rotation.z = -rotateAngle / 1.5;
-  // } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
-  //   groupRocket.rotation.z = -rotateAngle;
-  //   cylinderGroup.rotation.z = -rotateAngle;
-  // }
-  v0Temp = groupRocket.position;
-  centerOfEarth.add(v0Temp.negate());
-  // if(groupRocket.position.length() >= 1 ){
-  //  groupRocket.rotateOnAxis(centerOfEarth.normalize(),rotateAngle);
-  // }
+  if (!isNaN(thetaRocket) && groupRocket.position.length() > 1 && groupRocket.position.length() <= 10) {
+    groupRocket.rotation.z = -rotateAngle / 10;
+    cylinderGroup.rotation.z = -rotateAngle / 10;
+  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 10 && groupRocket.position.length() <= 35) {
+    groupRocket.rotation.z = -rotateAngle / 5;
+    cylinderGroup.rotation.z = -rotateAngle / 5;
+  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 35 && groupRocket.position.length() <= 49) {
+    groupRocket.rotation.z = -rotateAngle / 3;
+    cylinderGroup.rotation.z = -rotateAngle / 3;
+  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 49 && groupRocket.position.length() <= 65) {
+    groupRocket.rotation.z = -rotateAngle / 2;
+    cylinderGroup.rotation.z = -rotateAngle / 2;
+  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 65 && groupRocket.position.length() <= 85) {
+    groupRocket.rotation.z = -rotateAngle / 1.5;
+    cylinderGroup.rotation.z = -rotateAngle / 1.5;
+  } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
+    groupRocket.rotation.z = -rotateAngle;
+    cylinderGroup.rotation.z = -rotateAngle;
+  }
+  
+  
+
   //cameras positions
   camera1.position.set(groupRocket.position.x, groupRocket.position.y + 0.025, groupRocket.position.z + 0.2);
   camera2.position.set(0, 0, 300);
@@ -447,7 +445,7 @@ setInterval(function () {
 
 
 
-}, 1000);
+}, 100);
 
 
 
