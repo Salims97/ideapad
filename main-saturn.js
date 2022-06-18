@@ -40,6 +40,9 @@ let v0Temp = 0, v1Temp = 0, x;
 //message 
 let loaderF, geometryF, materialF, meshF;
 
+//sound 
+let context, listener, sound, audioLoader;
+
 init();
 animate();
 // InitialPhyisics();
@@ -289,6 +292,37 @@ function init() {
     }
     event.preventDefault();
   }, true);
+
+
+   //add sound
+   context = new AudioContext();
+   listener = new THREE.AudioListener();
+   camera.add(listener);
+   camera1.add(listener);
+ 
+   // create a global audio source
+   sound = new THREE.Audio(listener);
+ 
+   audioLoader = new THREE.AudioLoader();
+ 
+   //Load a sound and set it as the Audio object's buffer
+   audioLoader.load('./assets/sounds/launch.wav', function (buffer) {
+     sound.setBuffer(buffer);
+     sound.setLoop(true);
+     sound.setVolume(0.5);
+     sound.play();
+   },
+     // onProgress callback
+     function (xhr) {
+       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+     },
+ 
+     // onError callback
+     function (err) {
+       console.log('error occured');
+     }
+   );
+ 
 }
 
 function updatePhysics() {
@@ -366,6 +400,8 @@ function updatePhysics() {
   } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
     groupRocket.rotation.z = -rotateAngle;
   }
+ 
+
 
 
 
@@ -375,9 +411,13 @@ function updatePhysics() {
   camera2.position.set(0, 0, 300);
 
 
-
-
-
+  document.getElementById("speed").innerHTML = Number.parseFloat(velocity.length()).toFixed(9);
+  document.getElementById("height").innerHTML = Number.parseFloat(groupRocket.position.y).toFixed(9);
+  document.getElementById("acceleration").innerHTML = Number.parseFloat(acceleration.length()).toFixed(9);
+  document.getElementById("ΣF").innerHTML = Number.parseFloat(vectorRocket.length()).toFixed(9);
+  document.getElementById("fuelMass").innerHTML = control.fuelMass;
+  document.getElementById("angleOfAttack").innerHTML = Number.parseFloat(angleOfAttack * 180/Math.PI).toFixed(2);
+  document.getElementById("thrust").innerHTML = control.thrust;
 }
 
 //this code runs every second 
@@ -442,9 +482,6 @@ setInterval(function () {
   // console.log('velocity: ', velocity);
   // console.log('rocket Position: ', groupRocket.position);
   // console.log();
-
-
-
 
 
 
