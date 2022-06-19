@@ -402,7 +402,7 @@ function updatePhysics() {
     loaderS = new FontLoader();
     loaderS.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
 
-      geometryS = new TextGeometry('Launch succeded!!!', {
+      geometryS = new TextGeometry('Launch succeeded!!!', {
         font: font,
         size: 3,
         height: 0.1,
