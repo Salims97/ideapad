@@ -233,6 +233,16 @@ function init() {
       cylinderGroup.add(oxigenCylinder1);
     }
   );
+  gltfLoader.load('assets/models/fire/scene.gltf',
+    (gltf) => {
+      const fire = gltf.scene;
+      fire.position.set(-0.001, 0.02, 0);
+      fire.scale.set(0.01, 0.0025, 0.015);
+      // // groupRocket.add(oxigenCylinder1);
+      // cylinderGroup.add(oxigenCylinder1);
+      cylinderGroup.add(fire)
+    }
+  );
 
 
 
@@ -457,6 +467,8 @@ function updatePhysics() {
   document.getElementById("fuelMass").innerHTML = control.fuelMass;
   document.getElementById("angleOfAttack").innerHTML = Number.parseFloat(angleOfAttack * 180 / Math.PI).toFixed(2);
   document.getElementById("thrust").innerHTML = control.thrust;
+
+
 }
 
 //this code runs every second 

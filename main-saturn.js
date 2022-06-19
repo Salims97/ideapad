@@ -204,9 +204,19 @@ function init() {
   gltfLoader.load('assets/models/usa-nasa-rocket/scene.gltf',
     (gltf) => {
       const rockets = gltf.scene;
-      rockets.position.set(0, 0.0889, 0);
+      rockets.position.set(0, 0.1, 0);
       rockets.scale.set(0.0015, 0.0015, 0.0015);
       groupRocket.add(rockets);
+    }
+  );
+  gltfLoader.load('assets/models/fire/scene.gltf',
+    (gltf) => {
+      const fire = gltf.scene;
+      fire.position.set(-0.001, 0.095, 0);
+      fire.scale.set(0.025, 0.004, 0.015);
+      // // groupRocket.add(oxigenCylinder1);
+      // cylinderGroup.add(oxigenCylinder1);
+     groupRocket.add(fire)
     }
   );
 
