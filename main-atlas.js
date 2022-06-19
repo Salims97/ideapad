@@ -198,6 +198,7 @@ function init() {
   //models combined
   groupRocket = new THREE.Group();
   cylinderGroup = new THREE.Group();
+  v0Temp = new THREE.Group();
   //vector of the rocket
   vectorRocket = new THREE.Vector3();
   //rocket
@@ -232,7 +233,7 @@ function init() {
       // groupRocket.add(oxigenCylinder1);
       cylinderGroup.add(oxigenCylinder1);
     }
-  );
+  );//adding fire moder
   gltfLoader.load('assets/models/fire/scene.gltf',
     (gltf) => {
       const fire = gltf.scene;
@@ -240,7 +241,7 @@ function init() {
       fire.scale.set(0.01, 0.0025, 0.015);
       // // groupRocket.add(oxigenCylinder1);
       // cylinderGroup.add(oxigenCylinder1);
-      cylinderGroup.add(fire)
+      v0Temp.add(fire);
     }
   );
 
@@ -248,6 +249,7 @@ function init() {
 
   scene.add(groupRocket);
   scene.add(cylinderGroup);
+  scene.add(v0Temp);
 
 
   // initial value of phyisics
@@ -344,8 +346,18 @@ function updatePhysics() {
     control.thrust = 0;
   }
   //sound stop
-  if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
+  if (control.thrust != 0) {
+    v1Temp = groupRocket.position;
+    // console.log(v1Temp.x);
+    v0Temp.position.x = v1Temp.x;
+    v0Temp.position.y = v1Temp.y;
+    v0Temp.position.z = v1Temp.z;
+  }
+  else if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
     sound.stop();
+    v0Temp.position.x = 0;
+    v0Temp.position.y = 0;
+    v0Temp.position.z = 800;
   }
 
   fThrust = new THREE.Vector3(control.thrust * Math.cos(angleOfAttack), control.thrust * Math.sin(angleOfAttack), 0);
@@ -492,7 +504,7 @@ setInterval(function () {
 
   //euler
   acceleration = vectorRocket.divideScalar(fullMass * 1000);
-  velocity = velocity.addScaledVector(acceleration, dt);
+  velocity = velocity.addScaledVector(acceleration, dt );
   rocketPosition = rocketPosition.addScaledVector(velocity, dt);
   r = groupRocket.position.y + 6278;
 

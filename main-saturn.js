@@ -35,7 +35,7 @@ var control;
 let temp, dir, temp1, length1, angle, centerOfEarth, rotateAngle;
 
 //delta V
-let v0Temp = 0, v1Temp = 0, x;
+let v0Temp, v1Temp, x;
 
 //message 
 let loaderF, geometryF, materialF, meshF;
@@ -198,6 +198,7 @@ function init() {
   //models combined
   groupRocket = new THREE.Group();
 
+  v0Temp = new THREE.Group();
   //vector of the rocket
   vectorRocket = new THREE.Vector3();
   //rocket
@@ -207,16 +208,6 @@ function init() {
       rockets.position.set(0, 0.1, 0);
       rockets.scale.set(0.0015, 0.0015, 0.0015);
       groupRocket.add(rockets);
-    }
-  );
-  gltfLoader.load('assets/models/fire/scene.gltf',
-    (gltf) => {
-      const fire = gltf.scene;
-      fire.position.set(-0.001, 0.095, 0);
-      fire.scale.set(0.025, 0.004, 0.015);
-      // // groupRocket.add(oxigenCylinder1);
-      // cylinderGroup.add(oxigenCylinder1);
-     groupRocket.add(fire)
     }
   );
 
@@ -243,10 +234,22 @@ function init() {
   // );
 
 
-
+  //adding fire model
+  gltfLoader.load('assets/models/fire/scene.gltf',
+    (gltf) => {
+      const fire = gltf.scene;
+      fire.position.set(-0.001, 0.095, 0);
+      fire.scale.set(0.025, 0.004, 0.015);
+      // // groupRocket.add(oxigenCylinder1);
+      // cylinderGroup.add(oxigenCylinder1);
+      v0Temp.add(fire);
+    }
+  );
 
 
   scene.add(groupRocket);
+  scene.add(v0Temp);
+
 
 
 
@@ -344,8 +347,18 @@ function updatePhysics() {
     control.thrust = 0;
   }
   //sound stop
-  if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
+  if (control.thrust != 0) {
+    v1Temp = groupRocket.position;
+    // console.log(v1Temp.x);
+    v0Temp.position.x = v1Temp.x;
+    v0Temp.position.y = v1Temp.y;
+    v0Temp.position.z = v1Temp.z;
+  }
+  else if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
     sound.stop();
+    v0Temp.position.x = 0;
+    v0Temp.position.y = 0;
+    v0Temp.position.z = 800;
   }
 
   fThrust = new THREE.Vector3(control.thrust * Math.cos(angleOfAttack), control.thrust * Math.sin(angleOfAttack), 0);
@@ -404,7 +417,7 @@ function updatePhysics() {
 
 
   //launch succeed condition
-  if (groupRocket.position.length() >= 140  && angleOfAttack < 0.2) {
+  if (groupRocket.position.length() >= 140 && angleOfAttack < 0.2) {
     groupRocket.position.x = groupRocket.position.x;
     groupRocket.position.y = groupRocket.position.y;
     groupRocket.position.z = groupRocket.position.z;
