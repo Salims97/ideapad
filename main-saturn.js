@@ -39,6 +39,7 @@ let v0Temp = 0, v1Temp = 0, x;
 
 //message 
 let loaderF, geometryF, materialF, meshF;
+let loaderS, geometryS, materialS, meshS;
 
 //sound 
 let context, listener, sound, audioLoader;
@@ -278,6 +279,8 @@ function init() {
     gui.add(controlObject, 'camera', 0, 2, 1);
   }
   fullMass = rocketMass + control.fuelMass;
+
+  //return when pressing 'l' button
   window.addEventListener("keydown", function (event) {
     if (event.defaultPrevented) {
       return;
@@ -294,41 +297,45 @@ function init() {
   }, true);
 
 
-   //add sound
-   context = new AudioContext();
-   listener = new THREE.AudioListener();
-   camera.add(listener);
-   camera1.add(listener);
- 
-   // create a global audio source
-   sound = new THREE.Audio(listener);
- 
-   audioLoader = new THREE.AudioLoader();
- 
-   //Load a sound and set it as the Audio object's buffer
-   audioLoader.load('./assets/sounds/launch.wav', function (buffer) {
-     sound.setBuffer(buffer);
-     sound.setLoop(true);
-     sound.setVolume(0.5);
-     sound.play();
-   },
-     // onProgress callback
-     function (xhr) {
-       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-     },
- 
-     // onError callback
-     function (err) {
-       console.log('error occured');
-     }
-   );
- 
+  //add sound
+  context = new AudioContext();
+  listener = new THREE.AudioListener();
+  camera.add(listener);
+  camera1.add(listener);
+
+  // create a global audio source
+  sound = new THREE.Audio(listener);
+
+  audioLoader = new THREE.AudioLoader();
+
+  //Load a sound and set it as the Audio object's buffer
+  audioLoader.load('./assets/sounds/launch.wav', function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
+  },
+    // onProgress callback
+    function (xhr) {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+
+    // onError callback
+    function (err) {
+      console.log('error occured');
+    }
+  );
+
 }
 
 function updatePhysics() {
 
   if (control.fuelMass == 0) {
     control.thrust = 0;
+  }
+  //sound stop
+  if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
+    sound.stop();
   }
 
   fThrust = new THREE.Vector3(control.thrust * Math.cos(angleOfAttack), control.thrust * Math.sin(angleOfAttack), 0);
@@ -348,12 +355,16 @@ function updatePhysics() {
   fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
   fLift = new THREE.Vector3(-lift * Math.cos(angleOfAttack + Math.PI / 2), -lift * Math.sin(angleOfAttack + Math.PI / 2), 0);
 
-  //launch failed condition
+  //launch failed condition and message
   if (groupRocket.position.y < 0) {
     groupRocket.position.x = groupRocket.position.x;
     groupRocket.position.y = -0.01;
     groupRocket.position.z = groupRocket.position.z;
     groupRocket.rotation.z = -Math.PI / 2;
+
+
+
+
 
     loaderF = new FontLoader();
     loaderF.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
@@ -367,18 +378,46 @@ function updatePhysics() {
     materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
 
     meshF = new THREE.Mesh(geometryF, materialF);
-    meshF.position.x = groupRocket.position.x -15;
+    meshF.position.x = groupRocket.position.x - 15;
     meshF.position.y = groupRocket.position.y + 3;
     meshF.position.z = groupRocket.position.z - 25;
     meshF.rotation.x = -0.5;
     scene.add(meshF);
-  } else {
+  } else if (groupRocket.position.length() < 140) {
     groupRocket.position.add(rocketPosition);
   }
 
 
 
 
+
+
+
+  //launch succeed condition
+  if (groupRocket.position.length() >= 140  && angleOfAttack < 0.2) {
+    groupRocket.position.x = groupRocket.position.x;
+    groupRocket.position.y = groupRocket.position.y;
+    groupRocket.position.z = groupRocket.position.z;
+
+    loaderS = new FontLoader();
+    loaderS.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
+
+      geometryS = new TextGeometry('Launch succeded!!!', {
+        font: font,
+        size: 3,
+        height: 0.1,
+      });
+    });
+    materialS = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+
+    meshS = new THREE.Mesh(geometryS, materialS);
+    scene.add(meshS);
+    meshS.position.x = groupRocket.position.x - 15;
+    meshS.position.y = groupRocket.position.y + 3;
+    meshS.position.z = groupRocket.position.z - 25;
+    meshS.rotation.x = -0.5;
+
+  }
 
 
 
@@ -400,7 +439,7 @@ function updatePhysics() {
   } else if (!isNaN(thetaRocket) && groupRocket.position.length() > 85) {
     groupRocket.rotation.z = -rotateAngle;
   }
- 
+
 
 
 
@@ -412,11 +451,11 @@ function updatePhysics() {
 
 
   document.getElementById("speed").innerHTML = Number.parseFloat(velocity.length()).toFixed(9);
-  document.getElementById("height").innerHTML = Number.parseFloat(groupRocket.position.y).toFixed(9);
+  document.getElementById("height").innerHTML = Number.parseFloat(groupRocket.position.length()).toFixed(9);
   document.getElementById("acceleration").innerHTML = Number.parseFloat(acceleration.length()).toFixed(9);
   document.getElementById("ΣF").innerHTML = Number.parseFloat(vectorRocket.length()).toFixed(9);
   document.getElementById("fuelMass").innerHTML = control.fuelMass;
-  document.getElementById("angleOfAttack").innerHTML = Number.parseFloat(angleOfAttack * 180/Math.PI).toFixed(2);
+  document.getElementById("angleOfAttack").innerHTML = Number.parseFloat(angleOfAttack * 180 / Math.PI).toFixed(2);
   document.getElementById("thrust").innerHTML = control.thrust;
 }
 

@@ -35,10 +35,11 @@ var control;
 let temp, dir, temp1, length1, angle, centerOfEarth, rotateAngle, origin;
 
 //delta V
-let v0Temp , v1Temp ;
+let v0Temp, v1Temp;
 
 //message 
 let loaderF, geometryF, materialF, meshF;
+let loaderS, geometryS, materialS, meshS;
 
 //sound 
 let context, listener, sound, audioLoader;
@@ -278,6 +279,8 @@ function init() {
     gui.add(controlObject, 'camera', 0, 2, 1);
   }
   fullMass = rocketMass + control.fuelMass;
+
+  //return when pressing 'l' button
   window.addEventListener("keydown", function (event) {
     if (event.defaultPrevented) {
       return;
@@ -292,6 +295,7 @@ function init() {
     }
     event.preventDefault();
   }, true);
+
 
   //add sound
   context = new AudioContext();
@@ -322,7 +326,6 @@ function init() {
     }
   );
 
-
 }
 
 function updatePhysics() {
@@ -331,7 +334,7 @@ function updatePhysics() {
     control.thrust = 0;
   }
   //sound stop
-  if (control.thrust == 0) {
+  if (control.thrust == 0 || groupRocket.position.length() >= 100.1) {
     sound.stop();
   }
 
@@ -352,15 +355,15 @@ function updatePhysics() {
   fDrag = new THREE.Vector3(-drag * Math.cos(angleOfAttack), -drag * Math.sin(angleOfAttack), 0);
   fLift = new THREE.Vector3(-lift * Math.cos(angleOfAttack + Math.PI / 2), -lift * Math.sin(angleOfAttack + Math.PI / 2), 0);
 
-  //launch failed  condition 
+  //launch failed  condition and message
   if (groupRocket.position.y < 0) {
     groupRocket.position.x = groupRocket.position.x;
     groupRocket.position.y = -0.01;
     groupRocket.position.z = groupRocket.position.z;
     groupRocket.rotation.z = -Math.PI / 2;
-    cylinderGroup.position.x = groupRocket.position.x;
+    cylinderGroup.position.x = cylinderGroup.position.x;
     cylinderGroup.position.y = -0.01;
-    cylinderGroup.position.z = groupRocket.position.z;
+    cylinderGroup.position.z = cylinderGroup.position.z;
     cylinderGroup.rotation.z = -Math.PI / 2;
 
     loaderF = new FontLoader();
@@ -375,19 +378,46 @@ function updatePhysics() {
     materialF = new THREE.MeshPhongMaterial({ color: 0xffff00 });
 
     meshF = new THREE.Mesh(geometryF, materialF);
+    scene.add(meshF);
     meshF.position.x = groupRocket.position.x - 15;
     meshF.position.y = groupRocket.position.y + 3;
     meshF.position.z = groupRocket.position.z - 25;
     meshF.rotation.x = -0.5;
-    scene.add(meshF);
-  } else {
+  }
+  else if (groupRocket.position.length() < 50) {
     groupRocket.position.add(rocketPosition);
     cylinderGroup.position.add(rocketPosition);
-  }
-
-  if (groupRocket.position.length() >= 50) {
+  }//cylinder drop condition
+  else if (groupRocket.position.length() >= 50 && groupRocket.position.length() < 140) {
+    groupRocket.position.add(rocketPosition);
     cylinderGroup.position.add(new THREE.Vector3(0, -0.05, 0));
   }
+
+  //launch succeed condition
+  if (groupRocket.position.length() >= 140 && angleOfAttack <= 0.5) {
+    groupRocket.position.x = groupRocket.position.x;
+    groupRocket.position.y = groupRocket.position.y;
+    groupRocket.position.z = groupRocket.position.z;
+
+    loaderS = new FontLoader();
+    loaderS.load('./node_modules/three/examples/fonts/droid/droid_serif_bold.typeface.json', function (font) {
+
+      geometryS = new TextGeometry('Launch succeded!!!', {
+        font: font,
+        size: 3,
+        height: 0.1,
+      });
+    });
+    materialS = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+
+    meshS = new THREE.Mesh(geometryS, materialS);
+    scene.add(meshS);
+    meshS.position.x = groupRocket.position.x - 15;
+    meshS.position.y = groupRocket.position.y + 3;
+    meshS.position.z = groupRocket.position.z - 25;
+    meshS.rotation.x = -0.5;
+  }
+
 
   rotateAngle = Math.PI / 2 - angleOfAttack;
   if (!isNaN(thetaRocket) && groupRocket.position.length() > 1 && groupRocket.position.length() <= 10) {
@@ -410,13 +440,18 @@ function updatePhysics() {
     cylinderGroup.rotation.z = -rotateAngle;
   }
 
+
+
+
+
+
   //cameras positions
   camera1.position.set(groupRocket.position.x, groupRocket.position.y + 0.025, groupRocket.position.z + 0.2);
   camera2.position.set(0, 0, 300);
 
 
   document.getElementById("speed").innerHTML = Number.parseFloat(velocity.length()).toFixed(9);
-  document.getElementById("height").innerHTML = Number.parseFloat(groupRocket.position.y).toFixed(9);
+  document.getElementById("height").innerHTML = Number.parseFloat(groupRocket.position.length()).toFixed(9);
   document.getElementById("acceleration").innerHTML = Number.parseFloat(acceleration.length()).toFixed(9);
   document.getElementById("ΣF").innerHTML = Number.parseFloat(vectorRocket.length()).toFixed(9);
   document.getElementById("fuelMass").innerHTML = control.fuelMass;
